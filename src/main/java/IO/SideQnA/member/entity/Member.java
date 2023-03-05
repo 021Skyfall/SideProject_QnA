@@ -1,6 +1,6 @@
 package IO.SideQnA.member.entity;
 
-import IO.SideQnA.Audit.Auditable;
+import IO.SideQnA.audit.Auditable;
 import IO.SideQnA.order.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +28,10 @@ public class Member extends Auditable {
 
     @Column(length = 13, nullable = false, unique = true)
     private String phone;
+
+    // 게시판 구현을 위한 패스워드 추가
+    @Column(length = 5, nullable = false)
+    private String password;
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 20, nullable = false)

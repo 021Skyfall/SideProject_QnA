@@ -66,4 +66,11 @@ public class MemberService {
         if (member.isPresent())
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
     }
+
+    public void verifiedEmailAndPassword(String email, String password) {
+        Optional<Member> memberEmail = repository.findByEmail(email);
+        Optional<Member> memberPassword = repository.findByPassword(password);
+        if (memberEmail.isEmpty() || memberPassword.isEmpty())
+            throw new BusinessLogicException(ExceptionCode.CANNOT_FOUND_MEMBER);
+    }
 }

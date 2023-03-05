@@ -1,4 +1,4 @@
-package IO.SideQnA.Audit;
+package IO.SideQnA.audit;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;
@@ -17,13 +17,9 @@ import java.time.LocalDateTime;
 public abstract class Auditable {
     @CreatedDate
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_AT")
-    private LocalDateTime modifiedAt;
-
-    @CreatedBy
-    @Column(name = "CREATED_BY")
-    private final String name = "Jeremiah";
+    private LocalDateTime modifiedAt = LocalDateTime.now();
 }

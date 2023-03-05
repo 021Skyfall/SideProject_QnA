@@ -1,6 +1,6 @@
 package IO.SideQnA.member.entity;
 
-import IO.SideQnA.Audit.Auditable;
+import IO.SideQnA.audit.Auditable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
