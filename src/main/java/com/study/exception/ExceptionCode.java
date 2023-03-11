@@ -11,8 +11,7 @@ public enum ExceptionCode {
     CANNOT_CHANGE_ORDER(403, "Order can not change"),
     NOT_IMPLEMENTATION(501, "Not Implementation"),
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
-    CANNOT_FOUND_MEMBER(404, "Member Does Not Exist"),
-    DOES_NOT_MATCHED_PASSWORD(400,"Password Does Not Match");
+    PASSWORD_MISMATCHED(400,"Password Does Not Match");
 
     @Getter
     private int status;

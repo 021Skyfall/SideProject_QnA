@@ -97,6 +97,6 @@ public class MemberService {
         Optional<Member> memberPassword = memberRepository.findByPassword(password);
 
         if (memberPassword.isEmpty())
-            throw new BusinessLogicException(ExceptionCode.CANNOT_FOUND_MEMBER);
+            throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
     }
 }

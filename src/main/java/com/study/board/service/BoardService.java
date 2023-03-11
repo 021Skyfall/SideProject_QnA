@@ -16,10 +16,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     public Board createboard(Board board){
-        Member findMember = memberService.findVerifiedMember(board.getMember().getMemberId());
-
-        if (!board.getPassword().equals(findMember.getPassword()))
-            throw new BusinessLogicException(ExceptionCode.DOES_NOT_MATCHED_PASSWORD);
+        memberService.findVerifiedMember(board.getMember().getMemberId());
+        memberService.verifyPassword(board.getPassword());
 
         return boardRepository.save(board);
     }
