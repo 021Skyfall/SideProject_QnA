@@ -10,7 +10,8 @@ public enum ExceptionCode {
     ORDER_NOT_FOUND(404, "Order not found"),
     CANNOT_CHANGE_ORDER(403, "Order can not change"),
     NOT_IMPLEMENTATION(501, "Not Implementation"),
-    INVALID_MEMBER_STATUS(400, "Invalid member status");  // TO 추가된 부분
+    INVALID_MEMBER_STATUS(400, "Invalid member status"),
+    CANNOT_FOUND_MEMBER(404, "Member Does Not Exist");
 
     @Getter
     private int status;

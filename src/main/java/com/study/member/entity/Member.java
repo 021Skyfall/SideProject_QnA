@@ -94,6 +94,9 @@ public class Member extends Auditable {
     @Column(length = 13, nullable = false, unique = true)
     private String phone;
 
+    @Column(length = 5, nullable = false)
+    private String password;
+
     /**
      * 회원의 상태를 추가하기 위한 Solution 코드입니다.
      * <p>

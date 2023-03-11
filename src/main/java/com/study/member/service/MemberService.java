@@ -92,4 +92,12 @@ public class MemberService {
         if (member.isPresent())
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
     }
+
+    public void verifyEmailAndPassword(String email, String password) {
+        Optional<Member> memberEmail = memberRepository.findByEmail(email);
+        Optional<Member> memberPassword = memberRepository.findByPassword(password);
+
+        if (memberEmail.isEmpty() || memberPassword.isEmpty())
+            throw new BusinessLogicException(ExceptionCode.CANNOT_FOUND_MEMBER);
+    }
 }
