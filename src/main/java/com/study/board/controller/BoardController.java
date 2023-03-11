@@ -24,7 +24,7 @@ public class BoardController {
     @PostMapping
     public ResponseEntity postBoard(@Validated @RequestBody BoardPostDto boardPostDto) {
 
-        Board board = mapper.BoardPostDtoToMessage(boardPostDto);
+        Board board = mapper.BoardPostDtoToBoard(boardPostDto);
         Board response = service.createboard(board);
 
 

@@ -3,20 +3,21 @@ package com.study.board.dto;
 import lombok.Getter;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 @Getter
 @Validated
 public class BoardPostDto {
-    @NotBlank
-    @Email
-    private String email;
+    @Positive
+    private Long memberId;
 
-    @NotBlank
-    @Pattern(regexp = "[0-9]{4}$") // Spring 타입에서만 씀
+    @Pattern(regexp = "[0-9]{4}$")
     private String password;
+
+    @NotBlank(message = "제목은 공백이 아니어야 합니다.")
+    private String title;
 
     @NotBlank(message = "내용은 공백이 아니어야 합니다.")
     private String content;

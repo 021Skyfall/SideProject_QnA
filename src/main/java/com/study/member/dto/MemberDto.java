@@ -3,6 +3,7 @@ package com.study.member.dto;
 import com.study.member.entity.Member;
 import com.study.validator.NotSpace;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Pattern;
 
 public class MemberDto {
     @Getter
+    @Builder
     public static class Post {
         @NotBlank
         @Email

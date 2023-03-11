@@ -6,9 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class BoardResponseDto {
-    private String boardId;
-
-    private String email;
-
+    private Long boardId;
+    private String title;
     private String content;
 }
