@@ -26,11 +26,11 @@ import java.util.List;
  * - @ExceptionHandler 적용
  */
 @RestController
-@RequestMapping("/v11/members")
+@RequestMapping("/members")
 @Validated
 @Slf4j
 public class MemberController {
-    private final static String MEMBER_DEFAULT_URL = "/v11/members";
+    private final static String MEMBER_DEFAULT_URL = "/members";
     private final MemberService memberService;
     private final MemberMapper mapper;
 

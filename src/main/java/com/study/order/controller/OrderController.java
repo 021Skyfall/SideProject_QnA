@@ -41,10 +41,10 @@ import java.util.List;
  * @see com.study.order.dto.OrderResponseDto
  */
 @RestController
-@RequestMapping("/v11/orders")
+@RequestMapping("/orders")
 @Validated
 public class OrderController {
-    private final static String ORDER_DEFAULT_URL = "/v11/orders";
+    private final static String ORDER_DEFAULT_URL = "/orders";
     private final OrderService orderService;
     private final OrderMapper mapper;
     private final MemberService memberService;

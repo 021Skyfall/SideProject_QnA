@@ -20,10 +20,10 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v11/coffees")
+@RequestMapping("/coffees")
 @Validated
 public class CoffeeController {
-    private final static String COFFEE_DEFAULT_URL = "/v11/coffees";
+    private final static String COFFEE_DEFAULT_URL = "/coffees";
     private CoffeeService coffeeService;
     private CoffeeMapper mapper;
 
