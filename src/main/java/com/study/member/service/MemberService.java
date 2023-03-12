@@ -92,11 +92,4 @@ public class MemberService {
         if (member.isPresent())
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
     }
-
-    public void verifyPassword(String password) {
-        Optional<Member> memberPassword = memberRepository.findByPassword(password);
-
-        if (memberPassword.isEmpty())
-            throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
-    }
 }
