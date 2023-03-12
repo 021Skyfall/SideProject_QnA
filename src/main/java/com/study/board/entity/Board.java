@@ -30,15 +30,33 @@ public class Board extends Auditable {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private Integer accessLevel;
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    @Enumerated(EnumType.STRING)
+    private BoardAccessStatus boardAccessStatus;
 
     @AllArgsConstructor
     public enum BoardStatus {
         QUESTION_REGISTRATION(1, "질문 등록"),
         QUESTION_ANSWERED(2, "답변 완료"),
         QUESTION_DELETE(3, "질문 삭제");
+
+        @Getter
+        private int stepNumber;
+
+        @Getter
+        private String stepDescription;
+    }
+
+    @AllArgsConstructor
+    public enum BoardAccessStatus {
+        PUBLIC(1,"공개글"),
+        SECRET(2,"비밀글");
 
         @Getter
         private int stepNumber;

@@ -1,6 +1,7 @@
 package com.study.board.dto;
 
 import lombok.Getter;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
@@ -21,4 +22,7 @@ public class BoardPostDto {
 
     @NotBlank(message = "내용은 공백이 아니어야 합니다.")
     private String content;
+
+    @Range(min = 1, max = 2)
+    private Integer accessLevel;
 }

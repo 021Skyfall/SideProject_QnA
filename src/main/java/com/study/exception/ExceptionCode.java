@@ -11,7 +11,11 @@ public enum ExceptionCode {
     CANNOT_CHANGE_ORDER(403, "Order can not change"),
     NOT_IMPLEMENTATION(501, "Not Implementation"),
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
-    PASSWORD_MISMATCHED(400,"Password Does Not Match");
+    PASSWORD_MISMATCHED(400,"Password Does Not Match"),
+    BOARD_NOT_FOUND(404,"Board Not Found"),
+    ID_MISMATCHED(400,"Id Does Not Match"),
+    DELETED_BOARD(404,"Board has already deleted"),
+    CANNOT_CHANGE_BOARD(400,"Board Can't Change");
 
     @Getter
     private int status;
