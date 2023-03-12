@@ -32,9 +32,7 @@ public class BoardService {
 
         logIn(board);
 
-        verifiedIdAndPassword(board);
-
-        Board findBoard = findVerifiedBoard(board.getBoardId());
+        Board findBoard = verifiedIdAndPassword(board);
 
         if (findBoard.getBoardStatus().getStepNumber() > 1)
             throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
@@ -54,9 +52,14 @@ public class BoardService {
     }
 
     public Board getBoard(Board board) {
+
         logIn(board);
 
         Board findBoard = findVerifiedBoard(board.getBoardId());
+
+        if (findBoard.getBoardAccessStatus().getStepNumber() == 2) {
+            verifiedIdAndPassword(board);
+        }
 
         alreadyDeletedBoard(findBoard);
 
@@ -64,11 +67,15 @@ public class BoardService {
     }
 
     public void deleteBoard(Board board) {
+
         logIn(board);
-        verifiedIdAndPassword(board);
-        Board findBoard = findVerifiedBoard(board.getBoardId());
+
+        Board findBoard = verifiedIdAndPassword(board);
+
         alreadyDeletedBoard(findBoard);
+
         findBoard.setBoardStatus(Board.BoardStatus.QUESTION_DELETE);
+
         boardRepository.save(findBoard);
     }
 
@@ -81,8 +88,8 @@ public class BoardService {
         return findBoard;
     }
 
-    private static void alreadyDeletedBoard(Board findBoard) {
-        if (findBoard.getBoardStatus().getStepNumber() == 3 )
+    private static void alreadyDeletedBoard(Board board) {
+        if (board.getBoardStatus().getStepNumber() == 3 )
             throw new BusinessLogicException(ExceptionCode.DELETED_BOARD);
     }
 
@@ -92,7 +99,7 @@ public class BoardService {
             throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
     }
 
-    private void verifiedIdAndPassword(Board board) {
+    private Board verifiedIdAndPassword(Board board) {
         Board findBoard = findVerifiedBoard(board.getBoardId());
 
         if (!Objects.equals(board.getMember().getMemberId(), findBoard.getMember().getMemberId()))
@@ -100,5 +107,7 @@ public class BoardService {
 
         if (!Objects.equals(board.getPassword(), findBoard.getPassword()))
             throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
+
+        return findBoard;
     }
 }
