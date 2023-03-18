@@ -63,6 +63,8 @@ public class BoardService {
 
         alreadyDeletedBoard(findBoard);
 
+
+
         return findBoard;
     }
 
@@ -102,11 +104,15 @@ public class BoardService {
     private Board verifiedIdAndPassword(Board board) {
         Board findBoard = findVerifiedBoard(board.getBoardId());
 
-        if (!Objects.equals(board.getMember().getMemberId(), findBoard.getMember().getMemberId()))
-            throw new BusinessLogicException(ExceptionCode.ID_MISMATCHED);
+        if (board.getMember().getMemberId() != 1) {
 
-        if (!Objects.equals(board.getPassword(), findBoard.getPassword()))
-            throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
+            if (!Objects.equals(board.getMember().getMemberId(), findBoard.getMember().getMemberId()))
+                throw new BusinessLogicException(ExceptionCode.ID_MISMATCHED);
+
+            if (!Objects.equals(board.getPassword(), findBoard.getPassword()))
+                throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
+
+        }
 
         return findBoard;
     }

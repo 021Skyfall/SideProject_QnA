@@ -3,6 +3,7 @@ package com.study.board.mapper;
 import com.study.board.dto.*;
 import com.study.board.entity.Board;
 import com.study.member.entity.Member;
+import com.study.reply.entity.Reply;
 import lombok.Setter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Positive;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardMapper {
 
-//    @Mapping(source = "member.memberId", target = "memberId") // 자동 매핑
+    //    @Mapping(source = "member.memberId", target = "memberId") // 자동 매핑
     default Board BoardPostDtoToBoard(BoardPostDto boardPostDto) { // 수동 매핑
         // 매핑해야할 소스 필드
         Long memberId = boardPostDto.getMemberId();
@@ -35,6 +36,7 @@ public interface BoardMapper {
 
         return board;
     }
+
     //    @Mapping(source = "member.memberId", target = "memberID")
     default Board boardPatchDtoToBoard(BoardPatchDto boardPatchDto) {
 
@@ -87,21 +89,20 @@ public interface BoardMapper {
 
         return board;
     }
-    default BoardResponseDto BoardToResponseDto(Board board){
-        // 매핑해야할 소스 필드
+
+    default BoardResponseDto BoardToResponseDto(Board board) {
         Long boardId = board.getBoardId();
         String title = board.getTitle();
         String content = board.getContent();
         Board.BoardAccessStatus boardAccessStatus = board.getBoardAccessStatus();
-
-        // 매핑 당할 타겟 필드
-        BoardResponseDto boardResponseDto = BoardResponseDto
-                .builder()
-                .boardId(boardId)
-                .title(title)
-                .content(content)
-                .boardAccessStatus(boardAccessStatus)
-                .build();
+        Reply reply = board.getReply();
+        
+        BoardResponseDto boardResponseDto = new BoardResponseDto();
+        boardResponseDto.setBoardId(boardId);
+        boardResponseDto.setTitle(title);
+        boardResponseDto.setContent(content);
+        boardResponseDto.setBoardAccessStatus(boardAccessStatus);
+        boardResponseDto.setReply(new Reply());
 
         return boardResponseDto;
     }

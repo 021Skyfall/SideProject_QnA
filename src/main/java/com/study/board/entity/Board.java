@@ -2,6 +2,7 @@ package com.study.board.entity;
 
 import com.study.audit.Auditable;
 import com.study.member.entity.Member;
+import com.study.reply.entity.Reply;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,9 @@ public class Board extends Auditable {
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    @OneToOne(mappedBy = "board", cascade = CascadeType.PERSIST)
+    private Reply reply;
 
     @Enumerated(EnumType.STRING)
     private BoardAccessStatus boardAccessStatus;

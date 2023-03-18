@@ -51,7 +51,7 @@ public class BoardController {
         return new ResponseEntity<>(mapper.BoardToResponseDto(response),HttpStatus.OK);
     }
 
-    @DeleteMapping("/{board-id}")
+    @DeleteMapping("/{reply-id}")
     public ResponseEntity deleteBoard(@PathVariable("board-id") @Positive long boardId,
                                       @Validated @RequestBody BoardDeleteDto boardDeleteDto) {
         boardDeleteDto.setBoardId(boardId);
