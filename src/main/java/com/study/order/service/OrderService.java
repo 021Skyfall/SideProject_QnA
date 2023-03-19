@@ -6,6 +6,7 @@ import com.study.exception.ExceptionCode;
 import com.study.member.entity.Member;
 import com.study.member.service.MemberService;
 import com.study.order.entity.Order;
+import com.study.order.entity.OrderCoffee;
 import com.study.order.repository.OrderRepository;
 import com.study.stamp.Stamp;
 import org.springframework.data.domain.Page;

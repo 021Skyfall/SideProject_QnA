@@ -4,6 +4,8 @@ import com.study.board.dto.*;
 import com.study.board.entity.Board;
 import com.study.board.mapper.BoardMapper;
 import com.study.board.service.BoardService;
+import com.study.reply.dto.ReplyResponseDto;
+import com.study.reply.entity.Reply;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class BoardController {
         Board board = mapper.BoardPostDtoToBoard(boardPostDto);
         Board response = service.createBoard(board);
 
-        return new ResponseEntity<>(mapper.BoardToResponseDto(response), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PatchMapping("/{board-id}")
@@ -37,7 +39,7 @@ public class BoardController {
         Board board = mapper.boardPatchDtoToBoard(boardPatchDto);
         Board response = service.updateBoard(board);
 
-        return new ResponseEntity<>(mapper.BoardToResponseDto(response),HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{board-id}")

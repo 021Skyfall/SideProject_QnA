@@ -30,23 +30,22 @@ public class ReplyController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-//    @PatchMapping("/{reply-id}")
-//    public ResponseEntity patchReply(@PathVariable("reply-id") @Positive Long replyId,
-//                                     @Validated @RequestBody ReplyPatchDto replyPatchDto) {
-//        replyPatchDto.setReplyId(replyId);
-//
-//        Reply reply = replyMapper.replyPatchDtoToReply(replyPatchDto);
-//        Reply response = service.updateReply(reply);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{reply-id}")
-//    public ResponseEntity deleteReply(@PathVariable("reply-id") @Positive Long replyId,
-//                                      @Validated @RequestBody ReplyDeleteDto replyDeleteDto) {
-//        replyDeleteDto.setReplyId(replyId);
-//        service.deleteReply(replyMapper.replyDeleteDtoToReply(replyDeleteDto));
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @PatchMapping("/{reply-id}")
+    public ResponseEntity patchReply(@PathVariable("reply-id") @Positive Long replyId,
+                                     @Validated @RequestBody ReplyPatchDto replyPatchDto) {
+        replyPatchDto.setReplyId(replyId);
+
+        replyMapper.replyPatchDtoToReply(replyPatchDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{reply-id}")
+    public ResponseEntity deleteReply(@PathVariable("reply-id") @Positive Long replyId,
+                                      @Validated @RequestBody ReplyDeleteDto replyDeleteDto) {
+
+        service.deleteReply(replyId,replyMapper.replyDeleteDtoToReply(replyDeleteDto));
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -3,6 +3,7 @@ package com.study.board.mapper;
 import com.study.board.dto.*;
 import com.study.board.entity.Board;
 import com.study.member.entity.Member;
+import com.study.reply.dto.ReplyResponseDto;
 import com.study.reply.entity.Reply;
 import lombok.Setter;
 import org.mapstruct.Mapper;
@@ -12,6 +13,11 @@ import org.mapstruct.ReportingPolicy;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardMapper {
@@ -95,14 +101,25 @@ public interface BoardMapper {
         String title = board.getTitle();
         String content = board.getContent();
         Board.BoardAccessStatus boardAccessStatus = board.getBoardAccessStatus();
-        Reply reply = board.getReply();
-        
+
         BoardResponseDto boardResponseDto = new BoardResponseDto();
         boardResponseDto.setBoardId(boardId);
         boardResponseDto.setTitle(title);
         boardResponseDto.setContent(content);
         boardResponseDto.setBoardAccessStatus(boardAccessStatus);
-        boardResponseDto.setReply(new Reply());
+        boardResponseDto.setReplyResponseDto(new ArrayList<>());
+
+        if(board.getReply() != null){
+            String message = board.getReply().getMessage();
+            LocalDateTime local = board.getReply().getCreatedAt();
+
+            ReplyResponseDto replyResponseDto = new ReplyResponseDto();
+
+            replyResponseDto.setMessage(message);
+            replyResponseDto.setLocalDateTime(local);
+
+            boardResponseDto.getReplyResponseDto().add(replyResponseDto);
+        }
 
         return boardResponseDto;
     }

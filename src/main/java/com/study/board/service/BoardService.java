@@ -6,6 +6,7 @@ import com.study.exception.BusinessLogicException;
 import com.study.exception.ExceptionCode;
 import com.study.member.entity.Member;
 import com.study.member.service.MemberService;
+import com.study.reply.entity.Reply;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +26,12 @@ public class BoardService {
             board.setBoardAccessStatus(Board.BoardAccessStatus.PUBLIC);
         else board.setBoardAccessStatus(Board.BoardAccessStatus.SECRET);
 
+        board.setReply(new Reply());
+
         return boardRepository.save(board);
     }
 
+    // TODO: 2023-03-19 관리자가 다른 사람 게시글 수정 못하게 수정 필요
     public Board updateBoard(Board board) {
 
         logIn(board);
@@ -62,8 +66,6 @@ public class BoardService {
         }
 
         alreadyDeletedBoard(findBoard);
-
-
 
         return findBoard;
     }
@@ -100,6 +102,7 @@ public class BoardService {
         if (!board.getPassword().equals(member.getPassword()))
             throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
     }
+
 
     private Board verifiedIdAndPassword(Board board) {
         Board findBoard = findVerifiedBoard(board.getBoardId());
