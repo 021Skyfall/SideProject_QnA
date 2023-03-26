@@ -16,7 +16,8 @@ public enum ExceptionCode {
     ID_MISMATCHED(400,"Id Does Not Match"),
     DELETED_BOARD(404,"Board has already deleted"),
     CANNOT_CHANGE_BOARD(400,"Board Can't Change"),
-    ADMIN_ACCESS_ONLY(400,"Admin Only, Please Check your Id or Password");
+    ADMIN_ACCESS_ONLY(400,"Admin Only, Please Check your Id or Password"),
+    REPLY_NOT_FOUND(404,"Reply not found");
 
     @Getter
     private int status;

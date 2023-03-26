@@ -4,20 +4,14 @@ import com.study.board.dto.*;
 import com.study.board.entity.Board;
 import com.study.member.entity.Member;
 import com.study.reply.dto.ReplyResponseDto;
-import com.study.reply.entity.Reply;
-import lombok.Setter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardMapper {
@@ -96,7 +90,7 @@ public interface BoardMapper {
         return board;
     }
 
-    default BoardResponseDto BoardToResponseDto(Board board) {
+    default BoardResponseDto boardToResponseDto(Board board) {
         Long boardId = board.getBoardId();
         String title = board.getTitle();
         String content = board.getContent();
@@ -122,5 +116,16 @@ public interface BoardMapper {
         }
 
         return boardResponseDto;
+    }
+
+    @Mapping(source = "memberId", target = "member.memberId")
+    Board boardsDtoToBoard(BoardsDto boardsDto);
+
+    default List<BoardResponseDto> boardsToBoardsResponseDto(List<Board> boards) {
+        return boards.stream()
+                .filter(e -> e.getBoardStatus().getStepNumber() != 3
+                && e.getBoardAccessStatus().getStepNumber() != 2)
+                .map(this::boardToResponseDto)
+                .collect(Collectors.toList());
     }
 }

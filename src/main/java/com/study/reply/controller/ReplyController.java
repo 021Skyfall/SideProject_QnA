@@ -35,7 +35,7 @@ public class ReplyController {
                                      @Validated @RequestBody ReplyPatchDto replyPatchDto) {
         replyPatchDto.setReplyId(replyId);
 
-        replyMapper.replyPatchDtoToReply(replyPatchDto);
+        service.updateReply(replyMapper.replyPatchDtoToReply(replyPatchDto));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -44,7 +44,9 @@ public class ReplyController {
     public ResponseEntity deleteReply(@PathVariable("reply-id") @Positive Long replyId,
                                       @Validated @RequestBody ReplyDeleteDto replyDeleteDto) {
 
-        service.deleteReply(replyId,replyMapper.replyDeleteDtoToReply(replyDeleteDto));
+        replyDeleteDto.setReplyId(replyId);
+
+        service.deleteReply(replyMapper.replyDeleteDtoToReply(replyDeleteDto));
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

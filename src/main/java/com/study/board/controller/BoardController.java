@@ -6,13 +6,16 @@ import com.study.board.mapper.BoardMapper;
 import com.study.board.service.BoardService;
 import com.study.reply.dto.ReplyResponseDto;
 import com.study.reply.entity.Reply;
+import com.study.response.MultiResponseDto;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController
 @RequestMapping("/boards")
@@ -52,8 +55,24 @@ public class BoardController {
 
         return new ResponseEntity<>(mapper.BoardToResponseDto(response),HttpStatus.OK);
     }
+    
+    @GetMapping
+    public ResponseEntity getBoards(@Positive @RequestParam int page,
+                                    @Positive @RequestParam int size,
+                                    @RequestParam int filter,
+                                    @Validated @RequestBody BoardsDto boardsDto) {
 
-    @DeleteMapping("/{reply-id}")
+
+        Page<Board> pageBoard = service.getBoards(page - 1, size, filter,
+                mapper.boardsDtoToBoard(boardsDto));
+        List<Board> boards = pageBoard.getContent();
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(mapper.boardsToBoardsResponseDto(boards), pageBoard)
+                ,HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{board-id}")
     public ResponseEntity deleteBoard(@PathVariable("board-id") @Positive long boardId,
                                       @Validated @RequestBody BoardDeleteDto boardDeleteDto) {
         boardDeleteDto.setBoardId(boardId);
