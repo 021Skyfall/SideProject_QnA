@@ -8,8 +8,12 @@ import com.study.member.entity.Member;
 import com.study.member.service.MemberService;
 import com.study.reply.entity.Reply;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,7 +30,6 @@ public class BoardService {
             board.setBoardAccessStatus(Board.BoardAccessStatus.PUBLIC);
         else board.setBoardAccessStatus(Board.BoardAccessStatus.SECRET);
 
-        board.setReply(new Reply());
 
         return boardRepository.save(board);
     }
@@ -68,6 +71,19 @@ public class BoardService {
         alreadyDeletedBoard(findBoard);
 
         return findBoard;
+    }
+
+    public Page<Board> getBoards(int page, int size, int filter, Board board) {
+
+        logIn(board);
+
+        if (filter == 1) {
+            return boardRepository.findAll(PageRequest.of(
+                    page, size, Sort.by("boardId").descending()));
+        } else {
+            return boardRepository.findAll(PageRequest.of(
+                    page, size, Sort.by("boardId").ascending()));
+        }
     }
 
     public void deleteBoard(Board board) {

@@ -35,9 +35,9 @@ public class ReplyService {
     public void updateReply(Reply reply) {
         adminLogIn(reply);
 
-        checkBoard(reply);
-
         Reply findReply = verifiedReply(reply);
+
+        checkBoard(findReply);
 
         Optional.ofNullable(reply.getMessage())
                 .ifPresent(findReply::setMessage);
@@ -45,10 +45,22 @@ public class ReplyService {
         replyRepository.save(findReply);
     }
 
-    public void deleteReply(long replyId, Reply reply) {
+    public void deleteReply(Reply reply) {
         adminLogIn(reply);
 
-        replyRepository.deleteById(replyId);
+        Reply findReply = verifyReply(reply.getReplyId());
+
+        // 양방향 연관관계 매핑을 끊어서 삭제하기 위함
+        Board findBoard = checkBoard(findReply);
+        findBoard.setReply(null);
+
+        replyRepository.delete(findReply);
+    }
+
+    private Reply verifyReply(Long replyId) {
+        Optional<Reply> findReply = replyRepository.findById(replyId);
+        return findReply.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.REPLY_NOT_FOUND));
     }
 
     private Reply verifiedReply(Reply reply) {

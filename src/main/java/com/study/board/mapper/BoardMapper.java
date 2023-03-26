@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardMapper {
@@ -96,7 +97,7 @@ public interface BoardMapper {
         return board;
     }
 
-    default BoardResponseDto BoardToResponseDto(Board board) {
+    default BoardResponseDto boardToResponseDto(Board board) {
         Long boardId = board.getBoardId();
         String title = board.getTitle();
         String content = board.getContent();
@@ -122,5 +123,16 @@ public interface BoardMapper {
         }
 
         return boardResponseDto;
+    }
+
+    @Mapping(source = "memberId", target = "member.memberId")
+    Board boardsDtoToBoard(BoardsDto boardsDto);
+
+    default List<BoardResponseDto> boardsToBoardsResponseDto(List<Board> boards) {
+        return boards.stream()
+                .filter(e -> e.getBoardStatus().getStepNumber() != 3
+                && e.getBoardAccessStatus().getStepNumber() != 2)
+                .map(this::boardToResponseDto)
+                .collect(Collectors.toList());
     }
 }

@@ -41,7 +41,7 @@ public class Board extends Auditable {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "board", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     private Reply reply;
 
     @Enumerated(EnumType.STRING)
