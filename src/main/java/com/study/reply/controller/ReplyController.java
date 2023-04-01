@@ -1,6 +1,5 @@
 package com.study.reply.controller;
 
-import com.study.reply.dto.ReplyDeleteDto;
 import com.study.reply.dto.ReplyPatchDto;
 import com.study.reply.dto.ReplyPostDto;
 import com.study.reply.entity.Reply;
@@ -41,12 +40,9 @@ public class ReplyController {
     }
 
     @DeleteMapping("/{reply-id}")
-    public ResponseEntity deleteReply(@PathVariable("reply-id") @Positive Long replyId,
-                                      @Validated @RequestBody ReplyDeleteDto replyDeleteDto) {
+    public ResponseEntity deleteReply(@PathVariable("reply-id") @Positive Long replyId) {
 
-        replyDeleteDto.setReplyId(replyId);
-
-        service.deleteReply(replyMapper.replyDeleteDtoToReply(replyDeleteDto));
+        service.deleteReply(replyId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -5,38 +5,36 @@ import com.study.board.repository.BoardRepository;
 import com.study.exception.BusinessLogicException;
 import com.study.exception.ExceptionCode;
 import com.study.member.entity.Member;
-import com.study.member.service.MemberService;
+import com.study.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @AllArgsConstructor
 @Service
 public class BoardService {
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
     public Board createBoard(Board board){
-        logIn(board);
+        verifyMember(board.getMember().getMemberId());
 
         if (board.getAccessLevel() == 1)
             board.setBoardAccessStatus(Board.BoardAccessStatus.PUBLIC);
         else board.setBoardAccessStatus(Board.BoardAccessStatus.SECRET);
-
 
         return boardRepository.save(board);
     }
 
     public Board updateBoard(Board board) {
 
-        logIn(board);
+        verifyMember(board.getMember().getMemberId());
 
-        Board findBoard = verifiedIdAndPassword(board);
+        Board findBoard = findVerifiedBoard(board.getBoardId());
 
         if (findBoard.getBoardStatus().getStepNumber() > 1)
             throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
@@ -55,25 +53,16 @@ public class BoardService {
         return boardRepository.save(findBoard);
     }
 
-    public Board getBoard(Board board) {
+    public Board getBoard(long boardId) {
 
-        logIn(board);
-
-        Board findBoard = findVerifiedBoard(board.getBoardId());
-
-        if (findBoard.getBoardAccessStatus().getStepNumber() == 2) {
-            verifiedIdAndPassword(board);
-        }
+        Board findBoard = findVerifiedBoard(boardId);
 
         alreadyDeletedBoard(findBoard);
 
         return findBoard;
     }
 
-    public Page<Board> getBoards(int page, int size, int filter, Board board) {
-
-        logIn(board);
-
+    public Page<Board> getBoards(int page, int size, int filter) {
         if (filter == 1) {
             return boardRepository.findAll(PageRequest.of(
                     page, size, Sort.by("boardId").descending()));
@@ -83,11 +72,9 @@ public class BoardService {
         }
     }
 
-    public void deleteBoard(Board board) {
+    public void deleteBoard(long boardId) {
 
-        logIn(board);
-
-        Board findBoard = verifiedIdAndPassword(board);
+        Board findBoard = findVerifiedBoard(boardId);
 
         alreadyDeletedBoard(findBoard);
 
@@ -110,26 +97,10 @@ public class BoardService {
             throw new BusinessLogicException(ExceptionCode.DELETED_BOARD);
     }
 
-    private void logIn(Board board) {
-        Member member = memberService.findVerifiedMember(board.getMember().getMemberId());
-        if (!board.getPassword().equals(member.getPassword()))
-            throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
-    }
+    public void verifyMember(long memberId) {
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        optionalMember.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-
-    private Board verifiedIdAndPassword(Board board) {
-        Board findBoard = findVerifiedBoard(board.getBoardId());
-
-        if (board.getMember().getMemberId() != 1) {
-
-            if (!Objects.equals(board.getMember().getMemberId(), findBoard.getMember().getMemberId()))
-                throw new BusinessLogicException(ExceptionCode.ID_MISMATCHED);
-
-            if (!Objects.equals(board.getPassword(), findBoard.getPassword()))
-                throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCHED);
-
-        }
-
-        return findBoard;
     }
 }

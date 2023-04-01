@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @NoArgsConstructor
 @Getter
@@ -24,9 +21,6 @@ public class Board extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private BoardStatus boardStatus = BoardStatus.QUESTION_REGISTRATION;
-
-    @Column(nullable = false)
-    private String password;
 
     @Column(nullable = false)
     private String title;

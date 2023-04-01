@@ -6,10 +6,6 @@ import lombok.Setter;
 
 @Getter
 public class ReplyPatchDto {
-    // 로그인
-    private Long memberId;
-    private String password;
-
     @Setter
     private Long replyId;
 

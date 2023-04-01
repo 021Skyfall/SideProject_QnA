@@ -20,7 +20,6 @@ public interface BoardMapper {
     default Board BoardPostDtoToBoard(BoardPostDto boardPostDto) { // 수동 매핑
         // 매핑해야할 소스 필드
         Long memberId = boardPostDto.getMemberId();
-        String password = boardPostDto.getPassword();
         String title = boardPostDto.getTitle();
         String content = boardPostDto.getContent();
         Integer acceess = boardPostDto.getAccessLevel();
@@ -29,7 +28,6 @@ public interface BoardMapper {
         Board board = new Board();
         board.setMember(new Member());
         board.getMember().setMemberId(memberId);
-        board.setPassword(password);
         board.setTitle(title);
         board.setContent(content);
         board.setAccessLevel(acceess);
@@ -43,7 +41,6 @@ public interface BoardMapper {
         // 매핑해야할 소스 필드
         Long memberId = boardPatchDto.getMemberId();
         Long boardId = boardPatchDto.getBoardId();
-        String password = boardPatchDto.getPassword();
         String title = boardPatchDto.getTitle();
         String contents = boardPatchDto.getContent();
         Integer accessLevel = boardPatchDto.getAccessLevel();
@@ -53,7 +50,6 @@ public interface BoardMapper {
         board.setMember(new Member());
         board.getMember().setMemberId(memberId);
         board.setBoardId(boardId);
-        board.setPassword(password);
         board.setTitle(title);
         board.setAccessLevel(accessLevel);
         board.setContent(contents);
@@ -61,42 +57,15 @@ public interface BoardMapper {
         return board;
     }
 
-    default Board boardGetDtoToBoard(BoardGetDto boardGetDto) {
-        Long boardId = boardGetDto.getBoardId();
-        Long memberId = boardGetDto.getMemberId();
-        String password = boardGetDto.getPassword();
-
-        Board board = new Board();
-        board.setMember(new Member());
-        board.getMember().setMemberId(memberId);
-        board.setBoardId(boardId);
-        board.setPassword(password);
-
-        return board;
-    }
-
-    default Board boardDeleteDtoToBoard(BoardDeleteDto boardDeleteDto) {
-
-        Long boardId = boardDeleteDto.getBoardId();
-        Long memberId = boardDeleteDto.getMemberId();
-        String password = boardDeleteDto.getPassword();
-
-        Board board = new Board();
-        board.setMember(new Member());
-        board.getMember().setMemberId(memberId);
-        board.setBoardId(boardId);
-        board.setPassword(password);
-
-        return board;
-    }
-
     default BoardResponseDto boardToResponseDto(Board board) {
+        Long memberId = board.getMember().getMemberId();
         Long boardId = board.getBoardId();
         String title = board.getTitle();
         String content = board.getContent();
         Board.BoardAccessStatus boardAccessStatus = board.getBoardAccessStatus();
 
         BoardResponseDto boardResponseDto = new BoardResponseDto();
+        boardResponseDto.setMemberId(memberId);
         boardResponseDto.setBoardId(boardId);
         boardResponseDto.setTitle(title);
         boardResponseDto.setContent(content);
@@ -118,13 +87,9 @@ public interface BoardMapper {
         return boardResponseDto;
     }
 
-    @Mapping(source = "memberId", target = "member.memberId")
-    Board boardsDtoToBoard(BoardsDto boardsDto);
-
     default List<BoardResponseDto> boardsToBoardsResponseDto(List<Board> boards) {
         return boards.stream()
-                .filter(e -> e.getBoardStatus().getStepNumber() != 3
-                && e.getBoardAccessStatus().getStepNumber() != 2)
+                .filter(e -> e.getBoardStatus().getStepNumber() != 3)
                 .map(this::boardToResponseDto)
                 .collect(Collectors.toList());
     }

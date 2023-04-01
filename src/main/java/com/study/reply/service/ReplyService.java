@@ -17,13 +17,11 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ReplyService {
-    private final MemberService memberService;
     private final BoardService boardService;
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
 
     public void createReply(Reply reply) {
-        adminLogIn(reply);
 
         Board findBoard = checkBoard(reply);
         replyRepository.save(reply);
@@ -33,9 +31,8 @@ public class ReplyService {
     }
 
     public void updateReply(Reply reply) {
-        adminLogIn(reply);
 
-        Reply findReply = verifiedReply(reply);
+        Reply findReply = verifyReply(reply.getReplyId());
 
         checkBoard(findReply);
 
@@ -45,10 +42,9 @@ public class ReplyService {
         replyRepository.save(findReply);
     }
 
-    public void deleteReply(Reply reply) {
-        adminLogIn(reply);
+    public void deleteReply(long replyId) {
 
-        Reply findReply = verifyReply(reply.getReplyId());
+        Reply findReply = verifyReply(replyId);
 
         // 양방향 연관관계 매핑을 끊어서 삭제하기 위함
         Board findBoard = checkBoard(findReply);
@@ -63,24 +59,11 @@ public class ReplyService {
                 new BusinessLogicException(ExceptionCode.REPLY_NOT_FOUND));
     }
 
-    private Reply verifiedReply(Reply reply) {
-        Optional<Reply> findReply = replyRepository.findById(reply.getReplyId());
-        Reply reply1 = findReply.orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
-        return reply1;
-    }
-
     private Board checkBoard(Reply reply) {
         Board findboard = boardService.findVerifiedBoard(reply.getBoard().getBoardId());
         if (findboard.getBoardStatus().getStepNumber() == 3) {
             throw new BusinessLogicException(ExceptionCode.DELETED_BOARD);
         }
         return findboard;
-    }
-
-    public void adminLogIn(Reply reply) {
-        Member findMember = memberService.findVerifiedMember(reply.getMember().getMemberId());
-        if (findMember.getMemberId() != 1 || !findMember.getPassword().equals(reply.getPassword()))
-            throw new BusinessLogicException(ExceptionCode.ADMIN_ACCESS_ONLY);
     }
 }

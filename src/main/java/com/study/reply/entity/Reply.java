@@ -19,16 +19,10 @@ public class Reply extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long replyId;
 
-    private String password;
-
     @Column
     private String message;
 
     @OneToOne
     @JoinColumn(name = "BOARD_ID")
     private Board board;
-
-    @OneToOne
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
 }
