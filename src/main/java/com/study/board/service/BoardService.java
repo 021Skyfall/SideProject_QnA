@@ -6,14 +6,12 @@ import com.study.exception.BusinessLogicException;
 import com.study.exception.ExceptionCode;
 import com.study.member.entity.Member;
 import com.study.member.service.MemberService;
-import com.study.reply.entity.Reply;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,7 +32,6 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    // TODO: 2023-03-19 관리자가 다른 사람 게시글 수정 못하게 수정 필요
     public Board updateBoard(Board board) {
 
         logIn(board);
