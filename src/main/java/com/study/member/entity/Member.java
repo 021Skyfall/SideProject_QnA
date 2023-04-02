@@ -2,6 +2,8 @@ package com.study.member.entity;
 
 import com.study.audit.Auditable;
 import com.study.board.entity.Board;
+import com.study.exception.BusinessLogicException;
+import com.study.exception.ExceptionCode;
 import com.study.order.entity.Order;
 import com.study.stamp.Stamp;
 import lombok.Getter;
@@ -40,6 +42,16 @@ public class Member extends Auditable {
     @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Stamp stamp;
 
+    @Column(length = 100, nullable = false)
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
+
+    public boolean isAdmin() {
+        return this.getRoles().contains("ADMIN");
+    }
+
     public Member(String email) {
         this.email = email;
     }
@@ -74,6 +86,17 @@ public class Member extends Auditable {
 
         MemberStatus(String status) {
            this.status = status;
+        }
+
+    }
+    public static void checkExistEmail(Member targetMember) {
+        if(targetMember != null)
+            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+    }
+
+    public static void checkNotFoundMember(Member member) {
+        if (member == null) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
     }
 }

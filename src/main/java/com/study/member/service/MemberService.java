@@ -1,16 +1,20 @@
 package com.study.member.service;
 
+import com.study.auth.utils.CustomAuthorityUtils;
 import com.study.exception.BusinessLogicException;
 import com.study.exception.ExceptionCode;
 import com.study.member.entity.Member;
 import com.study.member.repository.MemberRepository;
-import com.study.stamp.Stamp;
 import com.study.utils.CustomBeanUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,78 +22,56 @@ import java.util.Optional;
  *  - DI 적용
  *  - Spring Data JPA 적용
  */
+@Transactional
 @Service
+@AllArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final CustomBeanUtils<Member> beanUtils;
-
-    public MemberService(MemberRepository memberRepository, CustomBeanUtils<Member> beanUtils) {
-        this.memberRepository = memberRepository;
-        this.beanUtils = beanUtils;
-    }
+    private final PasswordEncoder passwordEncoder;
+    private final CustomAuthorityUtils authorityUtils;
 
     public Member createMember(Member member) {
-        // 신규 회원에 대한 Stamp 제공
-        initStamp(member); // homework solution 추가
+        Member findMember = memberRepository.findByEmail(member.getEmail());
+        Member.checkExistEmail(findMember);
 
-        // 이미 등록된 이메일인지 확인
-        verifyExistsEmail(member.getEmail());
+        String encryptedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(encryptedPassword);
+
+        List<String> roles = authorityUtils.createRoles(member.getEmail());
+        member.setRoles(roles);
 
         return memberRepository.save(member);
     }
+    
+    public Member updateMember(Member member) {
+        Member findMember = findMember(member.getMemberId());
 
-    private void initStamp(Member member) {
-        member.setStamp(new Stamp());
-    }
-
-    // 리팩토링 전
-    public Member updateMemberOld(Member member) {
-        Member findMember = findVerifiedMember(member.getMemberId());
-
-        // 수정할 정보들이 늘어나면 반복되는 코드가 늘어나는 문제점이 있음
-        Optional.ofNullable(member.getName()).ifPresent(name -> findMember.setName(name));
-        Optional.ofNullable(member.getPhone()).ifPresent(phone -> findMember.setPhone(phone));
-        // 추가된 부분
-        Optional.ofNullable(member.getMemberStatus()).ifPresent(memberStatus -> findMember.setMemberStatus(memberStatus));
-//        findMember.setModifiedAt(LocalDateTime.now());
+        Optional.ofNullable(member.getName())
+                .ifPresent(findMember::setName);
+        Optional.ofNullable(member.getPhone())
+                .ifPresent(findMember::setPhone);
+        Optional.ofNullable(member.getMemberStatus())
+                .ifPresent(findMember::setMemberStatus);
 
         return memberRepository.save(findMember);
     }
 
-    // 리팩토링 후
-    public Member updateMember(Member member) {
-        Member findMember = findVerifiedMember(member.getMemberId());
-
-        Member updatedMember = beanUtils.copyNonNullProperties(member, findMember);
-
-        return memberRepository.save(updatedMember);
-    }
-
-    public Member findMember(long memberId) {
-        return findVerifiedMember(memberId);
-    }
-
-    public Page<Member> findMembers(int page, int size) {
-        return memberRepository.findAll(PageRequest.of(page, size, Sort.by("memberId").descending()));
-    }
-
     public void deleteMember(long memberId) {
-        Member findMember = findVerifiedMember(memberId);
-
+        Member findMember = findMember(memberId);
         memberRepository.delete(findMember);
     }
 
-    public Member findVerifiedMember(long memberId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
+    @Transactional(readOnly = true)
+    public Member findMember(long memberId) {
         Member findMember =
-                optionalMember.orElseThrow(() ->
-                        new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+                memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
         return findMember;
     }
 
-    private void verifyExistsEmail(String email) {
-        Optional<Member> member = memberRepository.findByEmail(email);
-        if (member.isPresent())
-            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+    @Transactional(readOnly = true)
+    public Page<Member> findMembers(int page, int size) {
+        return memberRepository.findAll(PageRequest.of(page, size, Sort.by("memberId").descending()));
     }
 }
