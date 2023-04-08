@@ -1,6 +1,8 @@
 package com.study.auth.config;
 
 import com.study.auth.filter.JwtAuthenticationFilter;
+import com.study.auth.filter.JwtVerificationFilter;
+import com.study.auth.handler.MemberAccessDeniedHandler;
 import com.study.auth.handler.MemberAuthenticationEntryPoint;
 import com.study.auth.handler.MemberAuthenticationFailureHandler;
 import com.study.auth.handler.MemberAuthenticationSuccessHandler;
@@ -37,7 +39,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     private final CustomAuthorityUtils authorityUtils;
 
     @Bean
-    private SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .headers().frameOptions().sameOrigin()
                 .and()
@@ -54,13 +56,13 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                                .antMatchers(HttpMethod.POST, "/*/members").permitAll()
-                                .mvcMatchers(HttpMethod.POST, "/*/members/**").hasRole("USER")
-                                .antMatchers(HttpMethod.PATCH, "/*/members/**").hasRole("USER")
-                                .antMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
+                                .antMatchers(HttpMethod.POST, "/members").permitAll()
+                                .mvcMatchers(HttpMethod.POST, "/members/**").hasRole("USER")
+                                .antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
+                                .antMatchers(HttpMethod.GET, "/members").hasRole("ADMIN")
 //                    .mvcMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
-                                .antMatchers(HttpMethod.GET, "/*/members/**").hasAnyRole("USER", "ADMIN")
-                                .antMatchers(HttpMethod.DELETE, "/*/members/**").hasRole("USER")
+                                .antMatchers(HttpMethod.GET, "/members/**").hasAnyRole("USER", "ADMIN")
+                                .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
                                 .antMatchers(HttpMethod.POST, "/*/coffees").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PATCH, "/*/coffees/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.GET, "/*/coffees/**").hasAnyRole("USER", "ADMIN")
@@ -101,11 +103,12 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity>{
         @Override
-        public void configue(HttpSecurity builder) throws Exception{
+        public void configure(HttpSecurity builder) throws Exception{
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer());
-            jwtAuthenticationFilter.setFilterProcessesUrl("/v11/auth/login");
+            JwtAuthenticationFilter jwtAuthenticationFilter =
+                    new JwtAuthenticationFilter(authenticationManager, jwtTokenizer());
+            jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
 

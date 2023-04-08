@@ -47,7 +47,7 @@ public class JwtParseInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
        try {
-           Map<String, Object> claims = jwtUtils.getJwtClaimsFromRequest(request);
+           Map<String, Object> claims = jwtUtils.getJwsClaimsFromRequest(request);
            authenticatedMemberId.set(Long.valueOf(claims.get("memberId").toString()));
            return true;
        } catch (Exception e) {

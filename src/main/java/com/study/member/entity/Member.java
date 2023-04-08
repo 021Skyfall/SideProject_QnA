@@ -32,6 +32,9 @@ public class Member extends Auditable {
     @Column(length = 13, nullable = false, unique = true)
     private String phone;
 
+    @Column(length = 100, nullable = false)
+    private String password;
+
     @Enumerated(value = EnumType.STRING)
     @Column(length = 20, nullable = false)
     private MemberStatus memberStatus = MemberStatus.MEMBER_ACTIVE;
@@ -42,8 +45,6 @@ public class Member extends Auditable {
     @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Stamp stamp;
 
-    @Column(length = 100, nullable = false)
-    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();

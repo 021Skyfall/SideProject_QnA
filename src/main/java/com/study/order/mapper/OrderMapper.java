@@ -10,6 +10,7 @@ import com.study.order.entity.Order;
 import com.study.order.entity.OrderCoffee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
  *     </li>
  * </ul>
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrderMapper {
     // 자동 매핑을 할 경우, Order가 OrderCoffee와 연관 관계 매핑을 할 방법이 없으므로 수동 매핑으로 해줘야 됨
     default Order orderPostDtoToOrder(OrderPostDto orderPostDto) {

@@ -74,4 +74,9 @@ public class MemberService {
     public Page<Member> findMembers(int page, int size) {
         return memberRepository.findAll(PageRequest.of(page, size, Sort.by("memberId").descending()));
     }
+
+    public void findVerifiedMember(long memberId) {
+        Member findMember =
+                memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
 }
